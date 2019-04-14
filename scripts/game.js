@@ -3,6 +3,11 @@
 // This provides the "game" code.
 //
 //------------------------------------------------------------------
+const GRID_WIDTH = 10;
+const GRID_HEIGHT = 20;
+const CELL_SIZE = 20;
+const X_OFFSET = 10;
+const Y_OFFSET = 10;
 MyGame.main = (function (systems, renderer, assets, graphics) {
     'use strict';
 
@@ -35,8 +40,9 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     function update(elapsedTime) {
         //
         // Tell the existing particles to update themselves
-        particlesSmoke.update(elapsedTime);
-        particlesFire.update(elapsedTime);
+        drawBoard();
+        // particlesSmoke.update(elapsedTime);
+        // particlesFire.update(elapsedTime);
     }
 
     //------------------------------------------------------------------
@@ -46,10 +52,10 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     //------------------------------------------------------------------
     function render() {
         graphics.clear();
-
+        drawBoard();
         renderSmoke.render();
         renderFire.render();
-        graphics.drawTexture(assets['purple'], {x:200, y:200}, 0, {x:64, y:64});
+
     }
 
     //------------------------------------------------------------------
@@ -77,7 +83,18 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     function initialize() {
         console.log('game initializing...');
         requestAnimationFrame(gameLoop);
+
     }
+
+    function drawBoard() {
+      for(let x = 0; x < GRID_WIDTH; x++){
+        for(let y = 0; y< GRID_HEIGHT; y++){
+          //need logic here to determine if piece occupies cell. if so, put that piece color. otherwise, put white piece
+          graphics.drawTexture(assets['white'], {x:x*CELL_SIZE+X_OFFSET, y:y*CELL_SIZE+Y_OFFSET}, 0, {x:CELL_SIZE, y:CELL_SIZE});
+        }
+      }
+    }
+
 
     return {
         initialize: initialize

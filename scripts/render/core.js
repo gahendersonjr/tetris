@@ -50,10 +50,10 @@ MyGame.graphics = (function() {
         context.translate(rect.center.x, rect.center.y );
         context.rotate(rect.rotation);
         context.translate(-rect.center.x, -rect.center.y);
-        
+
         context.fillStyle = fillStyle;
         context.fillRect(rect.center.x - rect.size.x / 2, rect.center.y - rect.size.y / 2, rect.size.x, rect.size.y);
-        
+
         context.strokeStyle = strokeStyle;
         context.strokeRect(rect.center.x - rect.size.x / 2, rect.center.y - rect.size.y / 2, rect.size.x, rect.size.y);
 

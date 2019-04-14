@@ -70,6 +70,10 @@ MyGame.loader = (function() {
         {
             key: 'purple',
             source: '/assets/purple.png'
+        },
+        {
+            key: 'white',
+            source: '/assets/white.png'
         }]
 
     //------------------------------------------------------------------
