@@ -36,6 +36,10 @@ MyGame.loader = (function() {
             onComplete: null
         }];
     let assetOrder = [{
+            key: 'background',
+            source: '/assets/background.jpg'
+        },
+        {
             key: 'fire',
             source: '/assets/fire.png'
         },
@@ -74,7 +78,8 @@ MyGame.loader = (function() {
         {
             key: 'white',
             source: '/assets/white.png'
-        }]
+        }
+      ]
 
     //------------------------------------------------------------------
     //
@@ -190,7 +195,9 @@ MyGame.loader = (function() {
     //------------------------------------------------------------------
     function mainComplete() {
         console.log('It is all loaded up');
-        MyGame.main.initialize();
+        let canvas = document.getElementById("id-canvas");
+        let context = canvas.getContext("2d");
+        context.drawImage(MyGame.assets["background"], 0, 0);
     }
 
     //

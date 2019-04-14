@@ -7,9 +7,28 @@ body
 {
     position: absolute;
     left: 0;
-    top: 0;
-    background-color: #F0E68C;
-    z-index: 0;
+    top: 40px;
+    border:2px solid grey;
+}
+
+#buttons{
+  width: 1000px;
+  border:2px solid grey;
+  background-color: grey;
+}
+
+.button {
+  height: 38px;
+  background-color: grey;
+  color: white;
+  font-family: "Courier New";
+  font-size: 25px;
+
+  border: none;
+}
+
+.button:hover {
+  border: 2px solid white;
 }
 
 .tile{

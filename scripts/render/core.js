@@ -9,8 +9,9 @@ MyGame.graphics = (function() {
     // Public function that allows the client code to clear the canvas.
     //
     //------------------------------------------------------------------
-    function clear() {
+    function clear(background) {
         context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(background, 0, 0);
     }
 
     // --------------------------------------------------------------
