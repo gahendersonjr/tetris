@@ -38,10 +38,39 @@ MyGame.loader = (function() {
     let assetOrder = [{
             key: 'fire',
             source: '/assets/fire.png'
-        }, {
+        },
+        {
             key: 'smoke',
             source: '/assets/smoke.png'
-        }];
+        },
+        {
+            key: 'red',
+            source: '/assets/red.png'
+        },
+        {
+            key: 'blue',
+            source: '/assets/blue.png'
+        },
+        {
+            key: 'green',
+            source: '/assets/green.png'
+        },
+        {
+            key: 'lightblue',
+            source: '/assets/lightblue.png'
+        },
+        {
+            key: 'orange',
+            source: '/assets/orange.png'
+        },
+        {
+            key: 'pink',
+            source: '/assets/pink.png'
+        },
+        {
+            key: 'purple',
+            source: '/assets/purple.png'
+        }]
 
     //------------------------------------------------------------------
     //

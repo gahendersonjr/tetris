@@ -23,6 +23,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
             lifetime: { mean: 4, stdev: 1 }
         },
         graphics);
+
     let renderFire = renderer.ParticleSystem(particlesFire, graphics, assets['fire']);
     let renderSmoke = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
 
@@ -48,6 +49,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
         renderSmoke.render();
         renderFire.render();
+        graphics.drawTexture(assets['purple'], {x:200, y:200}, 0, {x:64, y:64});
     }
 
     //------------------------------------------------------------------
