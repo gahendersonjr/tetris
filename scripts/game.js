@@ -107,9 +107,17 @@ function highScores(){
   // highs = highs.sort(sortNumber);
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(MyGame.assets["background"], 0, 0);
-  // context.fillStyle = "white";
+  //change rect size when
+  context.fillStyle = "grey";
+  context.fillRect(10, 70, 200, 300);
+  context.fillStyle = "white";
   context.font = "20px Courier New";
   context.fillText("high scores:", 20, 100);
+  context.fillText("1. 123123123", 40, 150);
+  context.fillText("1. 123123123", 40, 200);
+  context.fillText("1. 123123123", 40, 250);
+  context.fillText("1. 123123123", 40, 300);
+  context.fillText("1. 123123123", 40, 350);
   // context.fillText("1. " + highs[0], 40, 250);
   // context.fillText("2. " + highs[1], 40, 300);
   // context.fillText("3. " + highs[2], 40, 350);
@@ -120,7 +128,9 @@ function highScores(){
 function credits(){
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(MyGame.assets["background"], 0, 0);
-  // context.fillStyle = "white";
+  context.fillStyle = "grey";
+  context.fillRect(10, 70, 420, 150);
+  context.fillStyle = "white";
   context.font = "20px Courier New";
   context.fillText("credits:", 20, 100);
   context.fillText("by alan henderson", 40, 150);
