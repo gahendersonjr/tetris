@@ -3,7 +3,6 @@ MyGame = {
     render: {},
     assets: {}
 };
-
 //------------------------------------------------------------------
 //
 // Purpose of this code is to bootstrap (maybe I should use that as the name)
@@ -36,6 +35,10 @@ MyGame.loader = (function() {
             onComplete: null
         }];
     let assetOrder = [{
+        key: 'music',
+        source: '/assets/music.mp3'
+      },
+      {
             key: 'background',
             source: '/assets/background.jpg'
         },

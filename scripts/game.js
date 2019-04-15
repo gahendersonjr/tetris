@@ -92,7 +92,6 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       }
     }
 
-
     return {
         initialize: initialize
     };
@@ -101,6 +100,8 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
 function startGame(){
   MyGame.main.initialize();
+  let audio = new Audio(MyGame.assets["music"].src);
+  audio.play();
 }
 
 function highScores(){
