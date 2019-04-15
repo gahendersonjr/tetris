@@ -92,6 +92,13 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       }
     }
 
+    window.onkeyup = function(e) {
+      console.log(e.key);
+       if(e.keyCode==27){ //escape
+
+      }
+    }
+
     return {
         initialize: initialize
     };
@@ -124,6 +131,18 @@ function highScores(){
   // context.fillText("3. " + highs[2], 40, 350);
   // context.fillText("4. " + highs[3], 40, 400);
   // context.fillText("5. " + highs[4], 40, 450);
+}
+
+function controls(){
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(MyGame.assets["background"], 0, 0);
+  context.fillStyle = "grey";
+  context.fillRect(10, 70, 420, 150);
+  context.fillStyle = "white";
+  context.font = "20px Courier New";
+  context.fillText("credits:", 20, 100);
+  context.fillText("by alan henderson", 40, 150);
+  context.fillText("all assets from opengameart.org", 40, 200);
 }
 
 function credits(){
