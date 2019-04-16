@@ -116,11 +116,33 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     }
 
     function rotateClockwise(){
-      //make sure order of pieces array always ends in expected state
+      if(activePiece.color == "lightblue"){
+        rotateStraight();
+      }
     }
 
     function rotateCounterClockwise(){
-      //make sure order of pieces array always ends in expected state
+      if(activePiece.color == "lightblue"){
+        rotateStraight();
+      }
+    }
+
+    function rotateStraight(){
+      if(activePiece.orientation=="horizontal"){
+        activePiece.orientation = "vertical";
+        let base = Object.assign({}, activePiece.pieces[1]);
+        activePiece.pieces[0] = { x: base.x, y: base.y - 2};
+        activePiece.pieces[1] = { x: base.x, y: base.y - 1};
+        activePiece.pieces[2] = base;
+        activePiece.pieces[3] = { x: base.x, y: base.y + 1};
+      }else if(activePiece.orientation=="vertical"){
+        activePiece.orientation = "horizontal";
+        let base = Object.assign({}, activePiece.pieces[2]);
+        activePiece.pieces[0] = { x: base.x-1, y: base.y};
+        activePiece.pieces[1] = base;
+        activePiece.pieces[2] = { x: base.x+1, y: base.y};
+        activePiece.pieces[3] = { x: base.x+2, y: base.y};
+      }
     }
 
     return {
