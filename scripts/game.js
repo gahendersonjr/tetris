@@ -93,7 +93,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     function initialize() {
         console.log('game initializing...');
         // activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"};
-        // activePiece = {color: "pink", pieces: PINK};
+        activePiece = {color: "pink", pieces: PINK};
         // activePiece = {color: "green", pieces: GREEN, orientation: "horizontal"};
         // activePiece = {color: "red", pieces: RED, orientation: "horizontal"};
         // activePiece = {color: "purple", pieces: PURPLE, orientation: "up"};
@@ -122,9 +122,9 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       // console.log(e.key);
       console.log(e.keyCode);
        if(e.keyCode==37){ //left
-
+         moveLeft();
       }else if(e.keyCode==39){ //right
-
+        moveRight();
       }else if(e.keyCode==40){ //down
 
       }else if(e.keyCode==38){ //up
@@ -134,6 +134,30 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       }else if(e.keyCode==88){ //x
         rotate("clockwise");
       }
+  }
+
+  function moveLeft(){
+    let copy = Object.assign({}, activePiece);
+    for(let i = 0; i<4; i++){
+      if(activePiece.pieces[i].x == 0){
+        return;
+      }
+    }
+    for(let i = 0; i<4; i++){
+      activePiece.pieces[i].x -= 1;
+    }
+  }
+
+  function moveRight(){
+    let copy = Object.assign({}, activePiece);
+    for(let i = 0; i<4; i++){
+      if(activePiece.pieces[i].x == GRID_WIDTH-1){
+        return;
+      }
+    }
+    for(let i = 0; i<4; i++){
+      activePiece.pieces[i].x += 1;
+    }
   }
 
     function initializeCells(){
