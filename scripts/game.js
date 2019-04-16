@@ -3,14 +3,39 @@ const GRID_HEIGHT = 20;
 const CELL_SIZE = 45;
 const X_OFFSET = 290;
 const Y_OFFSET = 70;
-// const LIGHTBLUE = [{x: 3, y:0},
-//                   {x: 4, y:0},
-//                   {x: 5, y:0},
-//                   {x: 6, y:0}]
-const LIGHTBLUE = [{x: 3, y:5},
-                  {x: 4, y:5},
-                  {x: 5, y:5},
-                  {x: 6, y:5}]
+const LIGHTBLUE = [{x: 3, y:0}, //straight
+                  {x: 4, y:0},
+                  {x: 5, y:0},
+                  {x: 6, y:0}];
+const PINK = [{x: 4, y:0}, //straight
+              {x: 5, y:0},
+              {x: 4, y: 1},
+              {x: 5, y: 1}];
+
+const GREEN = [{x: 3, y: 1},//S
+                {x: 4, y: 1},
+                {x: 4, y:0},
+                {x: 5, y:0}];
+
+const RED = [{x: 3, y:0}, //Z
+              {x: 4, y:0},
+              {x: 4, y: 1},
+              {x: 5, y: 1}];
+
+const PURPLE = [{x: 3, y:1}, //T
+              {x: 4, y:1},
+              {x: 5, y: 1},
+              {x: 4, y: 0}];
+
+const ORANGE = [{x: 3, y:1}, //L
+              {x: 4, y:1},
+              {x: 5, y: 1},
+              {x: 5, y: 0}];
+
+const BLUE = [{x: 3, y:1}, //J
+              {x: 4, y:1},
+              {x: 5, y: 1},
+              {x: 3, y: 0}];
 let canvas = document.getElementById("id-canvas");
 let context = canvas.getContext("2d");
 
@@ -67,7 +92,13 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     function initialize() {
         console.log('game initializing...');
-        activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"};
+        // activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"};
+        // activePiece = {color: "pink", pieces: PINK};
+        // activePiece = {color: "green", pieces: GREEN, orientation: "horizontal"};
+        // activePiece = {color: "red", pieces: RED, orientation: "horizontal"};
+        // activePiece = {color: "purple", pieces: PURPLE, orientation: "up"};
+        // activePiece = {color: "blue", pieces: BLUE, orientation: "up"};
+        // activePiece = {color: "orange", pieces: ORANGE, orientation: "up"};
         requestAnimationFrame(gameLoop);
     }
 
@@ -99,9 +130,9 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       }else if(e.keyCode==38){ //up
 
       }else if(e.keyCode==90){ //z
-        rotateCounterClockwise();
+        rotate("counter");
       }else if(e.keyCode==88){ //x
-        rotateClockwise();
+        rotate("clockwise");
       }
   }
 
@@ -115,33 +146,169 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       return tempCells;
     }
 
+    function rotate(direction){
+      if(activePiece.color=="pink"){ //square
+        return; //no rotaion
+      }else if(activePiece.color=="lightblue"){ //straight
+        rotateStraight(); //both rotations same
+      }else if(activePiece.color == "green"){//S
+        rotateS(); //both rotation same
+      }else if(activePiece.color == "red"){//Z
+        rotateZ(); //both rotation same
+      } else{ //must be T, J, or L
+        if(direction=="clockwise"){
+          rotateClockwise();
+        }else if(direction=="counter"){
+          rotateCounterClockwise();
+        }
+      }
+    }
+
     function rotateClockwise(){
-      if(activePiece.color == "lightblue"){
-        rotateStraight();
+      if(activePiece.orientation=="up"){
+        right();
+      }else if(activePiece.orientation=="down"){
+        left();
+      }else if(activePiece.orientation=="left"){
+        up();
+      }else if(activePiece.orientation=="right"){
+        down();
       }
     }
 
     function rotateCounterClockwise(){
-      if(activePiece.color == "lightblue"){
-        rotateStraight();
+      if(activePiece.orientation=="up"){
+        left();
+      }else if(activePiece.orientation=="down"){
+        right();
+      }else if(activePiece.orientation=="left"){
+        down();
+      }else if(activePiece.orientation=="right"){
+        up();
       }
     }
 
     function rotateStraight(){
       if(activePiece.orientation=="horizontal"){
         activePiece.orientation = "vertical";
-        let base = Object.assign({}, activePiece.pieces[1]);
-        activePiece.pieces[0] = { x: base.x, y: base.y - 2};
-        activePiece.pieces[1] = { x: base.x, y: base.y - 1};
-        activePiece.pieces[2] = base;
-        activePiece.pieces[3] = { x: base.x, y: base.y + 1};
+        let copy = Object.assign({}, activePiece.pieces[1]);
+        activePiece.pieces[0] = { x: copy.x, y: copy.y - 2};
+        activePiece.pieces[1] = { x: copy.x, y: copy.y - 1};
+        activePiece.pieces[2] = copy;
+        activePiece.pieces[3] = { x: copy.x, y: copy.y + 1};
       }else if(activePiece.orientation=="vertical"){
         activePiece.orientation = "horizontal";
-        let base = Object.assign({}, activePiece.pieces[2]);
-        activePiece.pieces[0] = { x: base.x-1, y: base.y};
-        activePiece.pieces[1] = base;
-        activePiece.pieces[2] = { x: base.x+1, y: base.y};
-        activePiece.pieces[3] = { x: base.x+2, y: base.y};
+        let copy = Object.assign({}, activePiece.pieces[2]);
+        activePiece.pieces[0] = { x: copy.x-1, y: copy.y};
+        activePiece.pieces[1] = copy;
+        activePiece.pieces[2] = { x: copy.x+1, y: copy.y};
+        activePiece.pieces[3] = { x: copy.x+2, y: copy.y};
+      }
+    }
+
+    function rotateStraight(){
+      if(activePiece.orientation=="horizontal"){
+        activePiece.orientation = "vertical";
+        let copy = Object.assign({}, activePiece.pieces[1]);
+        activePiece.pieces[0] = { x: copy.x, y: copy.y - 2};
+        activePiece.pieces[1] = { x: copy.x, y: copy.y - 1};
+        activePiece.pieces[2] = copy;
+        activePiece.pieces[3] = { x: copy.x, y: copy.y + 1};
+      }else if(activePiece.orientation=="vertical"){
+        activePiece.orientation = "horizontal";
+        let copy = Object.assign({}, activePiece.pieces[2]);
+        activePiece.pieces[0] = { x: copy.x-1, y: copy.y};
+        activePiece.pieces[1] = copy;
+        activePiece.pieces[2] = { x: copy.x+1, y: copy.y};
+        activePiece.pieces[3] = { x: copy.x+2, y: copy.y};
+      }
+    }
+
+    function rotateS(){
+      if(activePiece.orientation=="horizontal"){
+        activePiece.orientation = "vertical";
+        let copy = Object.assign({}, activePiece.pieces[1]);
+        activePiece.pieces[0] = { x: copy.x, y: copy.y - 1};
+        activePiece.pieces[2] = { x: copy.x+1, y: copy.y};
+        activePiece.pieces[3] = { x: copy.x+1, y: copy.y+1};
+      }else if(activePiece.orientation=="vertical"){
+        activePiece.orientation = "horizontal";
+        let copy = Object.assign({}, activePiece.pieces[1]);
+        activePiece.pieces[0] = { x: copy.x-1, y: copy.y};
+        activePiece.pieces[2] = { x: copy.x, y: copy.y-1};
+        activePiece.pieces[3] = { x: copy.x+1, y: copy.y-1};
+      }
+    }
+
+    function rotateZ(){
+      if(activePiece.orientation=="horizontal"){
+        activePiece.orientation = "vertical";
+        let copy = Object.assign({}, activePiece.pieces[2]);
+        activePiece.pieces[0] = { x: copy.x+1, y: copy.y - 1};
+        activePiece.pieces[1] = { x: copy.x+1, y: copy.y};
+        activePiece.pieces[3] = { x: copy.x, y: copy.y+1};
+      }else if(activePiece.orientation=="vertical"){
+        activePiece.orientation = "horizontal";
+        let copy = Object.assign({}, activePiece.pieces[2]);
+        activePiece.pieces[0] = { x: copy.x-1, y: copy.y-1};
+        activePiece.pieces[1] = { x: copy.x, y: copy.y-1};
+        activePiece.pieces[3] = { x: copy.x+1, y: copy.y};
+      }
+    }
+
+    function up(){
+      activePiece.orientation = "up";
+      let copy = Object.assign({}, activePiece.pieces[1]);
+      activePiece.pieces[0] = { x: copy.x-1, y: copy.y};
+      activePiece.pieces[2] = { x: copy.x+1, y: copy.y};
+      if(activePiece.color=="purple"){
+        activePiece.pieces[3] = { x: copy.x, y: copy.y-1};
+      }else if(activePiece.color=="blue"){
+        activePiece.pieces[3] = { x: copy.x-1, y: copy.y-1};
+      }else if(activePiece.color=="orange"){
+        activePiece.pieces[3] = { x: copy.x+1, y: copy.y-1};
+      }
+    }
+
+    function down(){
+      activePiece.orientation = "down";
+      let copy = Object.assign({}, activePiece.pieces[1]);
+      activePiece.pieces[0] = { x: copy.x-1, y: copy.y};
+      activePiece.pieces[2] = { x: copy.x+1, y: copy.y};
+      if(activePiece.color=="purple"){
+        activePiece.pieces[3] = { x: copy.x, y: copy.y+1};
+      }else if(activePiece.color=="blue"){
+        activePiece.pieces[3] = { x: copy.x+1, y: copy.y+1};
+      }else if(activePiece.color=="orange"){
+        activePiece.pieces[3] = { x: copy.x-1, y: copy.y+1};
+      }
+    }
+
+    function left(){
+      activePiece.orientation = "left";
+      let copy = Object.assign({}, activePiece.pieces[1]);
+      activePiece.pieces[0] = { x: copy.x, y: copy.y-1};
+      activePiece.pieces[2] = { x: copy.x, y: copy.y+1};
+      if(activePiece.color=="purple"){
+        activePiece.pieces[3] = { x: copy.x-1, y: copy.y};
+      }else if(activePiece.color=="blue"){
+        activePiece.pieces[3] = { x: copy.x-1, y: copy.y+1};
+      }else if(activePiece.color=="orange"){
+        activePiece.pieces[3] = { x: copy.x-1, y: copy.y-1};
+      }
+    }
+
+    function right(){
+      activePiece.orientation = "right";
+      let copy = Object.assign({}, activePiece.pieces[1]);
+      activePiece.pieces[0] = { x: copy.x, y: copy.y-1};
+      activePiece.pieces[2] = { x: copy.x, y: copy.y+1};
+      if(activePiece.color=="purple"){
+        activePiece.pieces[3] = { x: copy.x+1, y: copy.y};
+      }else if(activePiece.color=="blue"){
+        activePiece.pieces[3] = { x: copy.x+1, y: copy.y-1};
+      }else if(activePiece.color=="orange"){
+        activePiece.pieces[3] = { x: copy.x+1, y: copy.y+1};
       }
     }
 
