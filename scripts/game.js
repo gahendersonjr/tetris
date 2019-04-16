@@ -116,11 +116,11 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     }
 
     function rotateClockwise(){
-
+      //make sure order of pieces array always ends in expected state
     }
 
     function rotateCounterClockwise(){
-
+      //make sure order of pieces array always ends in expected state
     }
 
     return {
