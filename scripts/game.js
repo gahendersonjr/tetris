@@ -10,8 +10,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     'use strict';
 
     let lastTimeStamp = performance.now();
-    //
-    // Define a sample particle system to demonstrate its capabilities
+
     let particlesFire = systems.ParticleSystem({
             center: { x: 300, y: 300 },
             size: { mean: 10, stdev: 4 },
@@ -30,24 +29,12 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     let renderFire = renderer.ParticleSystem(particlesFire, graphics, assets['fire']);
     let renderSmoke = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
 
-    //------------------------------------------------------------------
-    //
-    // Update the particles
-    //
-    //------------------------------------------------------------------
     function update(elapsedTime) {
-        //
-        // Tell the existing particles to update themselves
         drawBoard();
         // particlesSmoke.update(elapsedTime);
         // particlesFire.update(elapsedTime);
     }
 
-    //------------------------------------------------------------------
-    //
-    // Render the particles
-    //
-    //------------------------------------------------------------------
     function render() {
         graphics.clear(assets["background"]);
         drawBoard();
@@ -56,11 +43,6 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     }
 
-    //------------------------------------------------------------------
-    //
-    // This is the Game Loop function!
-    //
-    //------------------------------------------------------------------
     function gameLoop(time) {
         let elapsedTime = (time - lastTimeStamp);
 
@@ -72,12 +54,6 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
         requestAnimationFrame(gameLoop);
     };
 
-    //------------------------------------------------------------------
-    //
-    // Want to expose this to allow the loader code to call this when all
-    // is ready to go.
-    //
-    //------------------------------------------------------------------
     function initialize() {
         console.log('game initializing...');
         requestAnimationFrame(gameLoop);
@@ -140,9 +116,10 @@ function controls(){
   context.fillRect(10, 70, 420, 150);
   context.fillStyle = "white";
   context.font = "20px Courier New";
-  context.fillText("credits:", 20, 100);
-  context.fillText("by alan henderson", 40, 150);
-  context.fillText("all assets from opengameart.org", 40, 200);
+  context.fillText("controls:", 20, 100);
+  //to be done when I am ready for keyCode stuff
+  // context.fillText("by alan henderson", 40, 150);
+  // context.fillText("all assets from opengameart.org", 40, 200);
 }
 
 function credits(){
