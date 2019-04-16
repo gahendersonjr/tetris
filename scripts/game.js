@@ -3,10 +3,14 @@ const GRID_HEIGHT = 20;
 const CELL_SIZE = 45;
 const X_OFFSET = 290;
 const Y_OFFSET = 70;
-const LIGHTBLUE = [{x: 3, y:0},
-                  {x: 4, y:0},
-                  {x: 5, y:0},
-                  {x: 6, y:0}]
+// const LIGHTBLUE = [{x: 3, y:0},
+//                   {x: 4, y:0},
+//                   {x: 5, y:0},
+//                   {x: 6, y:0}]
+const LIGHTBLUE = [{x: 3, y:5},
+                  {x: 4, y:5},
+                  {x: 5, y:5},
+                  {x: 6, y:5}]
 let canvas = document.getElementById("id-canvas");
 let context = canvas.getContext("2d");
 
@@ -63,7 +67,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     function initialize() {
         console.log('game initializing...');
-        activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"}
+        activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"};
         requestAnimationFrame(gameLoop);
     }
 
@@ -97,7 +101,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       }else if(e.keyCode==90){ //z
         rotateCounterClockwise();
       }else if(e.keyCode==88){ //x
-
+        rotateClockwise();
       }
   }
 
@@ -111,26 +115,13 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       return tempCells;
     }
 
-    function rotateCounterClockwise(){
-      if(activePiece.color=="lightblue"){
-        let modifier = 1;
-        if(activePiece.orientation=="horizontal"){
-          activePiece.orientation="vertical";
-        }else if(activePiece.orientation=="vertical"){
-          activePiece.orientation="horizontal";
-          modifier = -1;
-          console.log(modifier);
-        }
-        activePiece.pieces[0].x +=2*modifier;
-        activePiece.pieces[0].y +=2*modifier;
+    function rotateClockwise(){
 
-        activePiece.pieces[1].x +=1*modifier;
-        activePiece.pieces[1].y +=1*modifier;
-
-        activePiece.pieces[3].x -=2*modifier;
-        activePiece.pieces[3].y -=1*modifier;
     }
-  }
+
+    function rotateCounterClockwise(){
+
+    }
 
     return {
         initialize: initialize
