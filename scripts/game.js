@@ -3,12 +3,17 @@ const GRID_HEIGHT = 20;
 const CELL_SIZE = 45;
 const X_OFFSET = 290;
 const Y_OFFSET = 70;
+const LIGHTBLUE = [{x: 3, y:0},
+                  {x: 4, y:0},
+                  {x: 5, y:0},
+                  {x: 6, y:0}]
 let canvas = document.getElementById("id-canvas");
 let context = canvas.getContext("2d");
 
 MyGame.main = (function (systems, renderer, assets, graphics) {
     'use strict';
-
+    let cells;
+    let activePiece = {};
     let lastTimeStamp = performance.now();
 
     let particlesFire = systems.ParticleSystem({
@@ -30,6 +35,8 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     let renderSmoke = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
 
     function update(elapsedTime) {
+        cells = initializeCells()
+        addPiecesToBoard();
         drawBoard();
         // particlesSmoke.update(elapsedTime);
         // particlesFire.update(elapsedTime);
@@ -56,24 +63,74 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     function initialize() {
         console.log('game initializing...');
+        activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"}
         requestAnimationFrame(gameLoop);
+    }
+
+    function addPiecesToBoard(){
+      for(let i = 0; i < 4; i++){
+        cells[getKey(activePiece.pieces[i].x ,activePiece.pieces[i].y)] = activePiece.color;
+      }
+      //add inactive pieces
     }
 
     function drawBoard() {
       for(let x = 0; x < GRID_WIDTH; x++){
         for(let y = 0; y< GRID_HEIGHT; y++){
           //need logic here to determine if piece occupies cell. if so, put that piece color. otherwise, put white piece
-          graphics.drawTexture(assets['white'], {x:x*CELL_SIZE+X_OFFSET, y:y*CELL_SIZE+Y_OFFSET}, 0, {x:CELL_SIZE, y:CELL_SIZE});
+          graphics.drawTexture(assets[cells[getKey(x,y)]], {x:x*CELL_SIZE+X_OFFSET, y:y*CELL_SIZE+Y_OFFSET}, 0, {x:CELL_SIZE, y:CELL_SIZE});
         }
       }
     }
 
     window.onkeyup = function(e) {
-      console.log(e.key);
-       if(e.keyCode==27){ //escape
+      // console.log(e.key);
+      console.log(e.keyCode);
+       if(e.keyCode==37){ //left
+
+      }else if(e.keyCode==39){ //right
+
+      }else if(e.keyCode==40){ //down
+
+      }else if(e.keyCode==38){ //up
+
+      }else if(e.keyCode==90){ //z
+        rotateCounterClockwise();
+      }else if(e.keyCode==88){ //x
 
       }
+  }
+
+    function initializeCells(){
+      let tempCells = {};
+      for(let x = 0; x < GRID_WIDTH; x++){
+        for(let y = 0; y< GRID_HEIGHT; y++){
+          tempCells[getKey(x,y)]="white";
+        }
+      }
+      return tempCells;
     }
+
+    function rotateCounterClockwise(){
+      if(activePiece.color=="lightblue"){
+        let modifier = 1;
+        if(activePiece.orientation=="horizontal"){
+          activePiece.orientation="vertical";
+        }else if(activePiece.orientation=="vertical"){
+          activePiece.orientation="horizontal";
+          modifier = -1;
+          console.log(modifier);
+        }
+        activePiece.pieces[0].x +=2*modifier;
+        activePiece.pieces[0].y +=2*modifier;
+
+        activePiece.pieces[1].x +=1*modifier;
+        activePiece.pieces[1].y +=1*modifier;
+
+        activePiece.pieces[3].x -=2*modifier;
+        activePiece.pieces[3].y -=1*modifier;
+    }
+  }
 
     return {
         initialize: initialize
@@ -132,4 +189,8 @@ function credits(){
   context.fillText("credits:", 20, 100);
   context.fillText("by alan henderson", 40, 150);
   context.fillText("all assets from opengameart.org", 40, 200);
+}
+
+function getKey(x,y){
+  return x.toString() + y.toString();
 }
