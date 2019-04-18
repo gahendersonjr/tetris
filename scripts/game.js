@@ -93,12 +93,12 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     function initialize() {
         console.log('game initializing...');
         activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"};
-        activePiece = {color: "pink", pieces: PINK};
-        activePiece = {color: "green", pieces: GREEN, orientation: "horizontal"};
-        activePiece = {color: "red", pieces: RED, orientation: "horizontal"};
-        activePiece = {color: "purple", pieces: PURPLE, orientation: "up"};
-        activePiece = {color: "blue", pieces: BLUE, orientation: "up"};
-        activePiece = {color: "orange", pieces: ORANGE, orientation: "up"};
+        // activePiece = {color: "pink", pieces: PINK};
+        // activePiece = {color: "green", pieces: GREEN, orientation: "horizontal"};
+        // activePiece = {color: "red", pieces: RED, orientation: "horizontal"};
+        // activePiece = {color: "purple", pieces: PURPLE, orientation: "up"};
+        // activePiece = {color: "blue", pieces: BLUE, orientation: "up"};
+        // activePiece = {color: "orange", pieces: ORANGE, orientation: "up"};
         requestAnimationFrame(gameLoop);
     }
 
@@ -198,6 +198,16 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           rotateClockwise();
         }else if(direction=="counter"){
           rotateCounterClockwise();
+        }
+      }
+      wallKick();
+    }
+
+    function wallKick(){
+      for(let i = 0; i< 4; i++){
+        if(activePiece.pieces[i].x<0){
+          moveRight();
+          console.log("moveRight");
         }
       }
     }
