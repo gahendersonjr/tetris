@@ -3,10 +3,10 @@ const GRID_HEIGHT = 20;
 const CELL_SIZE = 45;
 const X_OFFSET = 290;
 const Y_OFFSET = 70;
-const LIGHTBLUE = [{x: 3, y:GRID_HEIGHT-2}, //straight
-                  {x: 4, y:GRID_HEIGHT-2},
-                  {x: 5, y:GRID_HEIGHT-2},
-                  {x: 6, y:GRID_HEIGHT-2}];
+const LIGHTBLUE = [{x: 3, y:0}, //straight
+                  {x: 4, y:0},
+                  {x: 5, y:0},
+                  {x: 6, y:0}];
 const PINK = [{x: 4, y:0}, //straight
               {x: 5, y:0},
               {x: 4, y: 1},
@@ -200,16 +200,26 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           rotateCounterClockwise();
         }
       }
-      wallKick();
+      while(wallKick()){}
     }
 
     function wallKick(){
       for(let i = 0; i< 4; i++){
         if(activePiece.pieces[i].x<0){
           moveRight();
-          console.log("moveRight");
+          return true;
+        }else if(activePiece.pieces[i].x>=GRID_WIDTH){
+          moveLeft();
+          return true;
+        }else if(activePiece.pieces[i].y>=GRID_HEIGHT){
+          moveUp();
+          return true;
+        }else if(activePiece.pieces[i].y<0){
+          moveDown();
+          return true;
         }
       }
+    return false;
     }
 
     function rotateClockwise(){
