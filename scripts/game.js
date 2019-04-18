@@ -3,10 +3,10 @@ const GRID_HEIGHT = 20;
 const CELL_SIZE = 45;
 const X_OFFSET = 290;
 const Y_OFFSET = 70;
-const LIGHTBLUE = [{x: 3, y:0}, //straight
-                  {x: 4, y:0},
-                  {x: 5, y:0},
-                  {x: 6, y:0}];
+const LIGHTBLUE = [{x: 3, y:GRID_HEIGHT-2}, //straight
+                  {x: 4, y:GRID_HEIGHT-2},
+                  {x: 5, y:GRID_HEIGHT-2},
+                  {x: 6, y:GRID_HEIGHT-2}];
 const PINK = [{x: 4, y:0}, //straight
               {x: 5, y:0},
               {x: 4, y: 1},
@@ -92,13 +92,13 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     function initialize() {
         console.log('game initializing...');
-        // activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"};
+        activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"};
         activePiece = {color: "pink", pieces: PINK};
-        // activePiece = {color: "green", pieces: GREEN, orientation: "horizontal"};
-        // activePiece = {color: "red", pieces: RED, orientation: "horizontal"};
-        // activePiece = {color: "purple", pieces: PURPLE, orientation: "up"};
-        // activePiece = {color: "blue", pieces: BLUE, orientation: "up"};
-        // activePiece = {color: "orange", pieces: ORANGE, orientation: "up"};
+        activePiece = {color: "green", pieces: GREEN, orientation: "horizontal"};
+        activePiece = {color: "red", pieces: RED, orientation: "horizontal"};
+        activePiece = {color: "purple", pieces: PURPLE, orientation: "up"};
+        activePiece = {color: "blue", pieces: BLUE, orientation: "up"};
+        activePiece = {color: "orange", pieces: ORANGE, orientation: "up"};
         requestAnimationFrame(gameLoop);
     }
 
@@ -122,13 +122,27 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       // console.log(e.key);
       console.log(e.keyCode);
        if(e.keyCode==37){ //left
+         for(let i = 0; i<4; i++){
+           if(activePiece.pieces[i].x == 0){
+             return;
+           }
+         }
          moveLeft();
       }else if(e.keyCode==39){ //right
+        for(let i = 0; i<4; i++){
+          if(activePiece.pieces[i].x == GRID_WIDTH-1){
+            return;
+          }
+        }
         moveRight();
       }else if(e.keyCode==40){ //down
-
+        for(let i = 0; i<4; i++){
+          if(activePiece.pieces[i].y == GRID_HEIGHT-1){
+            return;
+          }
+        }
+        moveDown();
       }else if(e.keyCode==38){ //up
-
       }else if(e.keyCode==90){ //z
         rotate("counter");
       }else if(e.keyCode==88){ //x
@@ -137,26 +151,26 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
   }
 
   function moveLeft(){
-    let copy = Object.assign({}, activePiece);
-    for(let i = 0; i<4; i++){
-      if(activePiece.pieces[i].x == 0){
-        return;
-      }
-    }
     for(let i = 0; i<4; i++){
       activePiece.pieces[i].x -= 1;
     }
   }
 
   function moveRight(){
-    let copy = Object.assign({}, activePiece);
-    for(let i = 0; i<4; i++){
-      if(activePiece.pieces[i].x == GRID_WIDTH-1){
-        return;
-      }
-    }
     for(let i = 0; i<4; i++){
       activePiece.pieces[i].x += 1;
+    }
+  }
+
+  function moveDown(){
+    for(let i = 0; i<4; i++){
+      activePiece.pieces[i].y += 1;
+    }
+  }
+
+  function moveUp(){
+    for(let i = 0; i<4; i++){
+      activePiece.pieces[i].y -= 1;
     }
   }
 
