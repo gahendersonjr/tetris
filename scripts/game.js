@@ -1,48 +1,18 @@
 const GRID_WIDTH = 10;
 const GRID_HEIGHT = 20;
 const CELL_SIZE = 45;
-const X_OFFSET = 290;
+const X_OFFSET = 200;
 const Y_OFFSET = 70;
-const LIGHTBLUE = [{x: 3, y:0}, //straight
-                  {x: 4, y:0},
-                  {x: 5, y:0},
-                  {x: 6, y:0}];
-const PINK = [{x: 4, y:0}, //straight
-              {x: 5, y:0},
-              {x: 4, y: 1},
-              {x: 5, y: 1}];
 
-const GREEN = [{x: 3, y: 1},//S
-                {x: 4, y: 1},
-                {x: 4, y:0},
-                {x: 5, y:0}];
-
-const RED = [{x: 3, y:0}, //Z
-              {x: 4, y:0},
-              {x: 4, y: 1},
-              {x: 5, y: 1}];
-
-const PURPLE = [{x: 3, y:1}, //T
-              {x: 4, y:1},
-              {x: 5, y: 1},
-              {x: 4, y: 0}];
-
-const ORANGE = [{x: 3, y:1}, //L
-              {x: 4, y:1},
-              {x: 5, y: 1},
-              {x: 5, y: 0}];
-
-const BLUE = [{x: 3, y:1}, //J
-              {x: 4, y:1},
-              {x: 5, y: 1},
-              {x: 3, y: 0}];
 let canvas = document.getElementById("id-canvas");
 let context = canvas.getContext("2d");
 
 MyGame.main = (function (systems, renderer, assets, graphics) {
     'use strict';
     let cells;
-    let activePiece = {};
+    let nextPiece = getRandomPiece();
+    let activePiece = getRandomPiece();
+    let landed = false;
     let lastTimeStamp = performance.now();
 
     let particlesFire = systems.ParticleSystem({
@@ -64,7 +34,12 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     let renderSmoke = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
 
     function update(elapsedTime) {
-        cells = initializeCells()
+        cells = initializeCells();
+        if(landed){
+          activePiece = nextPiece;
+          nextPiece = getRandomPiece();
+          landed=false;
+        }
         addPiecesToBoard();
         drawBoard();
         // particlesSmoke.update(elapsedTime);
@@ -73,6 +48,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     function render() {
         graphics.clear(assets["background"]);
+        drawNextPiece();
         drawBoard();
         renderSmoke.render();
         renderFire.render();
@@ -92,13 +68,6 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     function initialize() {
         console.log('game initializing...');
-        activePiece = {color: "lightblue", pieces: LIGHTBLUE, orientation: "horizontal"};
-        // activePiece = {color: "pink", pieces: PINK};
-        // activePiece = {color: "green", pieces: GREEN, orientation: "horizontal"};
-        // activePiece = {color: "red", pieces: RED, orientation: "horizontal"};
-        // activePiece = {color: "purple", pieces: PURPLE, orientation: "up"};
-        // activePiece = {color: "blue", pieces: BLUE, orientation: "up"};
-        // activePiece = {color: "orange", pieces: ORANGE, orientation: "up"};
         requestAnimationFrame(gameLoop);
     }
 
@@ -116,6 +85,20 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           graphics.drawTexture(assets[cells[getKey(x,y)]], {x:x*CELL_SIZE+X_OFFSET, y:y*CELL_SIZE+Y_OFFSET}, 0, {x:CELL_SIZE, y:CELL_SIZE});
         }
       }
+    }
+
+    function drawNextPiece(){
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(MyGame.assets["background"], 0, 0);
+      context.fillStyle = "grey";
+      context.fillRect(660, 270, 300, 150);
+      context.fillStyle = "white";
+      context.font = "20px Courier New";
+      context.fillText("next piece:", 680, 290);
+      for(let i = 0; i<4;i++){
+        graphics.drawTexture(assets[nextPiece.color], {x:nextPiece.pieces[i].x*CELL_SIZE+620, y:nextPiece.pieces[i].y*CELL_SIZE+330}, 0, {x:CELL_SIZE, y:CELL_SIZE});
+      }
+
     }
 
     window.onkeyup = function(e) {
@@ -143,11 +126,30 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
         }
         moveDown();
       }else if(e.keyCode==38){ //up
+        hardDrop();
       }else if(e.keyCode==90){ //z
         rotate("counter");
       }else if(e.keyCode==88){ //x
         rotate("clockwise");
       }
+  }
+
+  function hardDrop(){
+    console.log("hardDrop");
+    while(true){
+      let canMoveDown = true;
+      for(let i =0; i<4;i++){
+        if(activePiece.pieces[i].y >= GRID_HEIGHT-1){
+          canMoveDown = false;
+        }
+      }
+      if (canMoveDown){
+        moveDown();
+      }else{
+        landed = true;
+        return;
+      }
+    }
   }
 
   function moveLeft(){
@@ -431,4 +433,43 @@ function credits(){
 
 function getKey(x,y){
   return x.toString() + y.toString();
+}
+
+function getRandomPiece(){
+  let lightblue = [{x: 3, y:0}, //straight
+                    {x: 4, y:0},
+                    {x: 5, y:0},
+                    {x: 6, y:0}];
+  let pink = [{x: 4, y:0}, //straight
+                {x: 5, y:0},
+                {x: 4, y: 1},
+                {x: 5, y: 1}];
+  let green = [{x: 3, y: 1},//S
+                  {x: 4, y: 1},
+                  {x: 4, y:0},
+                  {x: 5, y:0}];
+  let red = [{x: 3, y:0}, //Z
+                {x: 4, y:0},
+                {x: 4, y: 1},
+                {x: 5, y: 1}];
+  let purple = [{x: 3, y:1}, //T
+                {x: 4, y:1},
+                {x: 5, y: 1},
+                {x: 4, y: 0}];
+  let orange = [{x: 3, y:1}, //L
+                {x: 4, y:1},
+                {x: 5, y: 1},
+                {x: 5, y: 0}];
+  let blue = [{x: 3, y:1}, //J
+                {x: 4, y:1},
+                {x: 5, y: 1},
+                {x: 3, y: 0}];
+  let pieces = [{color: "lightblue", pieces: lightblue, orientation: "horizontal"},
+                  {color: "pink", pieces: pink},
+                  {color: "green", pieces: green, orientation: "horizontal"},
+                  {color: "red", pieces: red, orientation: "horizontal"},
+                  {color: "purple", pieces: purple, orientation: "up"},
+                  {color: "blue", pieces: blue, orientation: "up"},
+                  {color: "orange", pieces: orange, orientation: "up"}];
+  return pieces[Random.nextRange(0,6)];
 }
