@@ -16,6 +16,8 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     let lastTimeStamp = performance.now();
     let frameTime = 0;
     let frameSpeed = 1000;
+    let chainReaction = 100;
+    let cleared = [];
 
     let particlesFire = systems.ParticleSystem({
             center: { x: 300, y: 300 },
@@ -39,7 +41,13 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
         frameTime += elapsedTime;
         if (frameTime>frameSpeed) {
           frameTime = 0;
-          moveDown();
+          if(cleared.length>0){
+            cleared.sort(sortNumber);
+            dropRow(cleared.pop());
+            // die();
+          }else{
+            moveDown();
+          }
         }
         if(landed){
           for(let i = 0; i<4;i++){
@@ -47,10 +55,9 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           }
           activePiece = nextPiece;
           nextPiece = getRandomPiece();
+          checkCompleteRow();
           landed=false;
         }
-
-
         // particlesSmoke.update(elapsedTime);
         // particlesFire.update(elapsedTime);
     }
@@ -76,6 +83,41 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     function initialize() {
         console.log('game initializing...');
         requestAnimationFrame(gameLoop);
+    }
+
+    function checkCompleteRow(){
+      for(let y = GRID_HEIGHT - 1; y>=0; y--){
+        let rowCleared = true;
+        for(let x = 0; x < GRID_WIDTH - 1; x++){
+          if(cells[getKey(x,y)]=="white"){
+            rowCleared=false;
+          }
+        }
+        if(rowCleared){
+          clearRow(y);
+          cleared.push(y);
+        }
+      }
+    }
+
+    function clearRow(y){
+      for(let x = 0; x <GRID_WIDTH; x++){
+        cells[getKey(x,y)]="white";
+      }
+    }
+
+    function dropRow(clearY){
+      for(let y = clearY; y>0;y--){
+        for(let x = 0; x<GRID_WIDTH; x++){
+          if (y>0){
+            cells[getKey(x,y)] = cells[getKey(x,y-1)];
+          }
+          else{
+            cells[getKey(x,y)] = "white";
+          }
+        }
+      }
+
     }
 
     function addPiecesToBoard(){
@@ -482,4 +524,8 @@ function getRandomPiece(){
                   {color: "blue", pieces: blue, orientation: "up"},
                   {color: "orange", pieces: orange, orientation: "up"}];
   return pieces[Random.nextRange(0,6)];
+}
+
+function sortNumber(b,a) {
+    return a - b;
 }
