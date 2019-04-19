@@ -195,9 +195,9 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           rotateCounterClockwise();
         }
       }
-      // while(wallKick()){};
-      wallKick();
-      wallKick();
+      while(wallKick()){};
+      // wallKick();
+      // wallKick();
 
       for(let i = 0; i<4;i++){
         if(cells[getKey(activePiece.pieces[i].x,activePiece.pieces[i].y)] && cells[getKey(activePiece.pieces[i].x,activePiece.pieces[i].y)]!="white"){
@@ -211,9 +211,15 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
         if(activePiece.pieces[i].x<0){
           moveRight();
           return true;
+        }else if(cells[getKey(activePiece.pieces[i].x-1, activePiece.pieces[i].y)] && cells[getKey(activePiece.pieces[i].x-1, activePiece.pieces[i].y)]!="white"){
+          moveRight();
+          return false;
         }else if(activePiece.pieces[i].x>=GRID_WIDTH){
           moveLeft();
           return true;
+        }else if(cells[getKey(activePiece.pieces[i].x+1, activePiece.pieces[i].y)] && cells[getKey(activePiece.pieces[i].x+1, activePiece.pieces[i].y)]!="white"){
+          moveLeft();
+          return false;
         }else if(activePiece.pieces[i].y>=GRID_HEIGHT){
           moveUp();
           return true;
