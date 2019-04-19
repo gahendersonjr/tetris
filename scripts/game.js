@@ -14,6 +14,8 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     let activePiece = getRandomPiece();
     let landed = false;
     let lastTimeStamp = performance.now();
+    let frameTime = 0;
+    let frameSpeed = 1000;
 
     let particlesFire = systems.ParticleSystem({
             center: { x: 300, y: 300 },
@@ -34,7 +36,11 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     let renderSmoke = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
 
     function update(elapsedTime) {
-        // cells = initializeCells();
+        frameTime += elapsedTime;
+        if (frameTime>frameSpeed) {
+          frameTime = 0;
+          moveDown();
+        }
         if(landed){
           for(let i = 0; i<4;i++){
             cells[getKey(activePiece.pieces[i].x,activePiece.pieces[i].y)] = activePiece.color;
@@ -61,12 +67,9 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     function gameLoop(time) {
         let elapsedTime = (time - lastTimeStamp);
-
         update(elapsedTime);
         lastTimeStamp = time;
-
         render();
-
         requestAnimationFrame(gameLoop);
     };
 
