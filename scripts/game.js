@@ -109,25 +109,10 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       // console.log(e.key);
       console.log(e.keyCode);
        if(e.keyCode==37){ //left
-         for(let i = 0; i<4; i++){
-           if(activePiece.pieces[i].x == 0){
-             return;
-           }
-         }
          moveLeft();
       }else if(e.keyCode==39){ //right
-        for(let i = 0; i<4; i++){
-          if(activePiece.pieces[i].x == GRID_WIDTH-1){
-            return;
-          }
-        }
         moveRight();
       }else if(e.keyCode==40){ //down
-        for(let i = 0; i<4; i++){
-          if(activePiece.pieces[i].y == GRID_HEIGHT-1){
-            return;
-          }
-        }
         moveDown();
       }else if(e.keyCode==38){ //up
         hardDrop();
@@ -140,23 +125,29 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
   function hardDrop(){
     console.log("hardDrop");
-    while(true){
-      let canMoveDown = true;
-      for(let i =0; i<4;i++){
-        if(activePiece.pieces[i].y >= GRID_HEIGHT-1 || cells[getKey(activePiece.pieces[i].x, activePiece.pieces[i].y+1)]!="white"){
-          canMoveDown = false;
-        }
-      }
-      if (canMoveDown){
-        moveDown();
-      }else{
-        landed = true;
-        return;
-      }
-    }
+    // while(true){
+    //   let canMoveDown = true;
+    //   for(let i =0; i<4;i++){
+    //     if(activePiece.pieces[i].y >= GRID_HEIGHT-1 || cells[getKey(activePiece.pieces[i].x, activePiece.pieces[i].y+1)]!="white"){
+    //       canMoveDown = false;
+    //     }
+    //   }
+    //   if (canMoveDown){
+    //     moveDown();
+    //   }else{
+    //     landed = true;
+    //     return;
+    //   }
+    // }
+    while(moveDown()){}
   }
 
   function moveLeft(){
+    for(let i = 0; i<4; i++){
+      if(activePiece.pieces[i].x <0 || cells[getKey(activePiece.pieces[i].x-1, activePiece.pieces[i].y)]!="white"){
+        return;
+      }
+    }
     for(let i = 0; i<4; i++){
       activePiece.pieces[i].x -= 1;
     }
@@ -164,14 +155,26 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
   function moveRight(){
     for(let i = 0; i<4; i++){
+      if(activePiece.pieces[i].x >= GRID_HEIGHT-1 || cells[getKey(activePiece.pieces[i].x+1, activePiece.pieces[i].y)]!="white"){
+        return;
+      }
+    }
+    for(let i = 0; i<4; i++){
       activePiece.pieces[i].x += 1;
     }
   }
 
   function moveDown(){
     for(let i = 0; i<4; i++){
+      if(activePiece.pieces[i].y >= GRID_HEIGHT-1 || cells[getKey(activePiece.pieces[i].x, activePiece.pieces[i].y+1)]!="white"){
+        landed=true;
+        return false;
+      }
+    }
+    for(let i = 0; i<4; i++){
       activePiece.pieces[i].y += 1;
     }
+    return true;
   }
 
   function moveUp(){
