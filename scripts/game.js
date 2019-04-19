@@ -9,7 +9,7 @@ let context = canvas.getContext("2d");
 
 MyGame.main = (function (systems, renderer, assets, graphics) {
     'use strict';
-    let cells;
+    let cells = initializeCells();
     let nextPiece = getRandomPiece();
     let activePiece = getRandomPiece();
     let landed = false;
@@ -34,14 +34,17 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     let renderSmoke = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
 
     function update(elapsedTime) {
-        cells = initializeCells();
+        // cells = initializeCells();
         if(landed){
+          for(let i = 0; i<4;i++){
+            cells[getKey(activePiece.pieces[i].x,activePiece.pieces[i].y)] = activePiece.color;
+          }
           activePiece = nextPiece;
           nextPiece = getRandomPiece();
           landed=false;
         }
-        addPiecesToBoard();
-        drawBoard();
+
+
         // particlesSmoke.update(elapsedTime);
         // particlesFire.update(elapsedTime);
     }
@@ -50,6 +53,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
         graphics.clear(assets["background"]);
         drawNextPiece();
         drawBoard();
+        addPiecesToBoard();
         renderSmoke.render();
         renderFire.render();
 
@@ -73,7 +77,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     function addPiecesToBoard(){
       for(let i = 0; i < 4; i++){
-        cells[getKey(activePiece.pieces[i].x ,activePiece.pieces[i].y)] = activePiece.color;
+        graphics.drawTexture(assets[activePiece.color], {x:activePiece.pieces[i].x*CELL_SIZE+X_OFFSET, y:activePiece.pieces[i].y*CELL_SIZE+Y_OFFSET}, 0, {x:CELL_SIZE, y:CELL_SIZE});
       }
       //add inactive pieces
     }
@@ -139,7 +143,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     while(true){
       let canMoveDown = true;
       for(let i =0; i<4;i++){
-        if(activePiece.pieces[i].y >= GRID_HEIGHT-1){
+        if(activePiece.pieces[i].y >= GRID_HEIGHT-1 || cells[getKey(activePiece.pieces[i].x, activePiece.pieces[i].y+1)]!="white"){
           canMoveDown = false;
         }
       }
