@@ -107,7 +107,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     window.onkeyup = function(e) {
       // console.log(e.key);
-      console.log(e.keyCode);
+      // console.log(e.keyCode);
        if(e.keyCode==37){ //left
          moveLeft();
       }else if(e.keyCode==39){ //right
@@ -124,27 +124,12 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
   }
 
   function hardDrop(){
-    console.log("hardDrop");
-    // while(true){
-    //   let canMoveDown = true;
-    //   for(let i =0; i<4;i++){
-    //     if(activePiece.pieces[i].y >= GRID_HEIGHT-1 || cells[getKey(activePiece.pieces[i].x, activePiece.pieces[i].y+1)]!="white"){
-    //       canMoveDown = false;
-    //     }
-    //   }
-    //   if (canMoveDown){
-    //     moveDown();
-    //   }else{
-    //     landed = true;
-    //     return;
-    //   }
-    // }
     while(moveDown()){}
   }
 
   function moveLeft(){
     for(let i = 0; i<4; i++){
-      if(activePiece.pieces[i].x <0 || cells[getKey(activePiece.pieces[i].x-1, activePiece.pieces[i].y)]!="white"){
+      if(activePiece.pieces[i].x <0 || (cells[getKey(activePiece.pieces[i].x-1, activePiece.pieces[i].y)]!="white" && activePiece.pieces[i].x-1 <=GRID_WIDTH-1)){
         return;
       }
     }
@@ -155,7 +140,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
   function moveRight(){
     for(let i = 0; i<4; i++){
-      if(activePiece.pieces[i].x >= GRID_HEIGHT-1 || cells[getKey(activePiece.pieces[i].x+1, activePiece.pieces[i].y)]!="white"){
+      if(activePiece.pieces[i].x >= GRID_HEIGHT-1 || (cells[getKey(activePiece.pieces[i].x+1, activePiece.pieces[i].y)]!="white" && activePiece.pieces[i].x+1 >=0)){
         return;
       }
     }
@@ -166,7 +151,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
   function moveDown(){
     for(let i = 0; i<4; i++){
-      if(activePiece.pieces[i].y >= GRID_HEIGHT-1 || cells[getKey(activePiece.pieces[i].x, activePiece.pieces[i].y+1)]!="white"){
+      if(activePiece.pieces[i].y >= GRID_HEIGHT-1 || (cells[getKey(activePiece.pieces[i].x, activePiece.pieces[i].y+1)]!="white" && activePiece.pieces[i].y+1 >=0)){
         landed=true;
         return false;
       }
@@ -194,6 +179,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     }
 
     function rotate(direction){
+      let piecesCopy = Object.assign([], activePiece.pieces);
       if(activePiece.color=="pink"){ //square
         return; //no rotaion
       }else if(activePiece.color=="lightblue"){ //straight
@@ -209,7 +195,15 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           rotateCounterClockwise();
         }
       }
-      while(wallKick()){}
+      // while(wallKick()){};
+      wallKick();
+      wallKick();
+
+      for(let i = 0; i<4;i++){
+        if(cells[getKey(activePiece.pieces[i].x,activePiece.pieces[i].y)] && cells[getKey(activePiece.pieces[i].x,activePiece.pieces[i].y)]!="white"){
+          activePiece.pieces = piecesCopy;
+        }
+      }
     }
 
     function wallKick(){
