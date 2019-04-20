@@ -238,6 +238,32 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
         landed=true;
         let audio = new Audio(MyGame.assets["landed"].src);
         audio.play();
+        let tempMap = {};
+        for(let j = 0; j<4;j++){
+          tempMap[getKey(activePiece.pieces[j].x, activePiece.pieces[j].y)] = true;
+        }
+        for(let j = 0; j<4;j++){
+          if(!tempMap[getKey(activePiece.pieces[j].x-1, activePiece.pieces[j].y)]){
+            for(let k = 0; k<5;k++){
+              particles.createCellParticles(activePiece.pieces[j].x, activePiece.pieces[j].y, "left");
+            }
+          }
+          if(!tempMap[getKey(activePiece.pieces[j].x+1, activePiece.pieces[j].y)]){
+            for(let k = 0; k<5;k++){
+              particles.createCellParticles(activePiece.pieces[j].x, activePiece.pieces[j].y, "right");
+            }
+          }
+          if(!tempMap[getKey(activePiece.pieces[j].x, activePiece.pieces[j].y-1)]){
+            for(let k = 0; k<5;k++){
+              particles.createCellParticles(activePiece.pieces[j].x, activePiece.pieces[j].y, "up");
+            }
+          }
+          if(!tempMap[getKey(activePiece.pieces[j].x, activePiece.pieces[j].y+1)]){
+            for(let k = 0; k<5;k++){
+              particles.createCellParticles(activePiece.pieces[j].x, activePiece.pieces[j].y, "down");
+            }
+          }
+        }
         return false;
       }
     }
@@ -476,7 +502,7 @@ function startGame(){
   document.getElementById("highScores").style.display = "none";
   document.getElementById("control").style.display = "none";
   document.getElementById("credits").style.display = "none";
-  setScoreText(1,0,0);
+  setScoreText(0,0,0);
   MyGame.main.initialize();
   let audio = new Audio(MyGame.assets["music"].src);
   audio.play();
