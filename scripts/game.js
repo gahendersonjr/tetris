@@ -9,18 +9,14 @@ if(localStorage.getItem("tetris.highs")){
 }
 let canvas = document.getElementById("id-canvas");
 let context = canvas.getContext("2d");
-let leftKey = 37;
-let rightKey = 39;
-let softDropKey = 40;
-let hardDropKey = 38;
-let counterRotateKey = 90;
-let clockwiseRotateKey = 88;
-let leftKeyValue = "ArrowLeft";
-let rightKeyValue = "ArrowRight";
-let softDropKeyValue = "ArrowDown";
-let hardDropKeyValue = "ArrowUp";
-let counterRotateKeyValue = "x";
-let clockwiseRotateKeyValue = "y";
+let keyMappings = {
+  "left": {key: 37, value: "ArrowLeft"},
+  "right": {key: 39, value: "ArrowRight"},
+  "soft": {key: 40, value: "ArrowDown"},
+  "hard": {key: 38, value: "ArrowUp"},
+  "clockwise": {key: 88, value: "x"},
+  "counter": {key: 90, value: "z"}
+}
 
 MyGame.main = (function (systems, renderer, assets, graphics) {
     'use strict';
@@ -518,15 +514,19 @@ function controls(){
   context.fillStyle = "white";
   context.font = "20px Courier New";
   context.fillText("controls:", 20, 100);
-  context.fillText("left: " + leftKeyValue, 40, 150);
-  context.fillText("left: " + rightKeyValue, 40, 200);
-  context.fillText("soft drop: " + softDropKeyValue, 40, 250);
-  context.fillText("hard drop: " + hardDropKeyValue, 40, 300);
-  context.fillText("rotate clockwise: " + clockwiseRotateKeyValue, 40, 350);
-  context.fillText("rotate counterclockwise: " + counterRotateKeyValue, 40, 400);
+  context.fillText("left: " + keyMappings["left"].value, 40, 150);
+  context.fillText("right: " + keyMappings["right"].value, 40, 200);
+  context.fillText("soft drop: " + keyMappings["soft"].value, 40, 250);
+  context.fillText("hard drop: " + keyMappings["hard"].value, 40, 300);
+  context.fillText("rotate clockwise: " + keyMappings["clockwise"].value, 40, 350);
+  context.fillText("rotate counterclockwise: " + keyMappings["counter"].value, 40, 400);
   controlMode=true;
   context.fillText("to re-map keys, press the key you want", 20, 475);
   context.fillText("to change followed by the new key.", 20, 500);
+  var button = document.createElement("button");
+  button.innerHTML = "Do Something";
+  let container = document.getElementById("canvas-container");
+  container.appendChild(button);
 }
 
 
