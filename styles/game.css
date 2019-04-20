@@ -15,6 +15,7 @@ body
   width: 1000px;
   border:2px solid grey;
   background-color: grey;
+  height: 38px;
 }
 
 .button {
@@ -34,4 +35,13 @@ body
 .tile{
   background-color: black;
   z-index: 1;
+}
+
+#score{
+  color: white;
+  font-family: "Courier New";
+  font-size: 25px;
+  position:absolute;
+  left: 30px;
+  top: 10px;
 }
