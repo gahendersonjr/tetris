@@ -14,8 +14,14 @@ let keyMappings = {
   "right": {key: 39, value: "ArrowRight", name: "move right"},
   "soft": {key: 40, value: "ArrowDown", name: "soft drop"},
   "hard": {key: 38, value: "ArrowUp", name: "hard drop"},
-  "clockwise": {key: 88, value: "x", name: "rotate clockwise"},
-  "counter": {key: 90, value: "z", name: "rotate counter-clockwise"}
+  "clockwise": {key: 33, value: "PageUp", name: "rotate clockwise"},
+  "counter": {key: 36, value: "Home", name: "rotate counter-clockwise"}
+}
+for(let key in keyMappings){
+  if(localStorage.getItem("tetris."+ key)){
+    keyMappings[key].value = localStorage.getItem("tetris."+ key+"Name");
+    keyMappings[key].key = localStorage.getItem("tetris."+ key);
+  }
 }
 let commandToChange = "";
 let started = false;
@@ -554,6 +560,8 @@ function changeMapping(code, value){
   keyMappings[commandToChange].key = code;
   keyMappings[commandToChange].value = value;
   console.log(keyMappings[commandToChange]);
+  localStorage.setItem("tetris." + commandToChange+"Name", value);
+  localStorage.setItem("tetris." + commandToChange, code);
   commandToChange = "";
   controls();
 }
