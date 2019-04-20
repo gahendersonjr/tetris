@@ -10,13 +10,15 @@ if(localStorage.getItem("tetris.highs")){
 let canvas = document.getElementById("id-canvas");
 let context = canvas.getContext("2d");
 let keyMappings = {
-  "left": {key: 37, value: "ArrowLeft"},
-  "right": {key: 39, value: "ArrowRight"},
-  "soft": {key: 40, value: "ArrowDown"},
-  "hard": {key: 38, value: "ArrowUp"},
-  "clockwise": {key: 88, value: "x"},
-  "counter": {key: 90, value: "z"}
+  "left": {key: 37, value: "ArrowLeft", name: "move left"},
+  "right": {key: 39, value: "ArrowRight", name: "move right"},
+  "soft": {key: 40, value: "ArrowDown", name: "soft drop"},
+  "hard": {key: 38, value: "ArrowUp", name: "hard drop"},
+  "clockwise": {key: 88, value: "x", name: "rotate clockwise"},
+  "counter": {key: 90, value: "z", name: "rotate counter-clockwise"}
 }
+let commandToChange = "";
+let started = false;
 
 MyGame.main = (function (systems, renderer, assets, graphics) {
     'use strict';
@@ -96,7 +98,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     }
 
     function gameLoop(time) {
-        if(!gameOver){
+        if(!gameOver && started){
           let elapsedTime = (time - lastTimeStamp);
           update(elapsedTime);
           lastTimeStamp = time;
@@ -196,17 +198,21 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     window.onkeyup = function(e) {
       // console.log(e.key);
       // console.log(e.keyCode);
-       if(e.keyCode==37){ //left
+      if(commandToChange.length > 0){
+        changeMapping(e.keyCode, e.key);
+      }else if(!started){
+        return;
+      }else if(e.keyCode==keyMappings["left"].key){ //left
          moveLeft();
-      }else if(e.keyCode==39){ //right
+      }else if(e.keyCode==keyMappings["right"].key){ //right
         moveRight();
-      }else if(e.keyCode==40){ //down
+      }else if(e.keyCode==keyMappings["soft"].key){ //down
         moveDown();
-      }else if(e.keyCode==38){ //up
+      }else if(e.keyCode==keyMappings["hard"].key){ //up
         hardDrop();
-      }else if(e.keyCode==90){ //z
+      }else if(e.keyCode==keyMappings["counter"].key){ //z
         rotate("counter");
-      }else if(e.keyCode==88){ //x
+      }else if(e.keyCode==keyMappings["clockwise"].key){ //x
         rotate("clockwise");
       }
   }
@@ -474,6 +480,9 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 }(MyGame.systems, MyGame.render, MyGame.assets, MyGame.graphics));
 
 function startGame(){
+  started = true;
+  commandToChange = "";
+  toggle("controlButton", "none");
   document.getElementById("startGame").style.display = "none";
   document.getElementById("highScores").style.display = "none";
   document.getElementById("control").style.display = "none";
@@ -485,20 +494,16 @@ function startGame(){
 }
 
 function highScores(){
+  commandToChange = "";
+  toggle("controlButton", "none");
   highs = highs.sort(sortScore);
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(MyGame.assets["background"], 0, 0);
-  //change rect size when
   context.fillStyle = "grey";
   context.fillRect(10, 70, 200, 300);
   context.fillStyle = "white";
   context.font = "20px Courier New";
   context.fillText("high scores:", 20, 100);
-  // context.fillText("1. 123123123", 40, 150);
-  // context.fillText("1. 123123123", 40, 200);
-  // context.fillText("1. 123123123", 40, 250);
-  // context.fillText("1. 123123123", 40, 300);
-  // context.fillText("1. 123123123", 40, 350);
   context.fillText("1. " + highs[0], 40, 150);
   context.fillText("2. " + highs[1], 40, 200);
   context.fillText("3. " + highs[2], 40, 250);
@@ -507,6 +512,7 @@ function highScores(){
 }
 
 function controls(){
+  commandToChange = "";
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(MyGame.assets["background"], 0, 0);
   context.fillStyle = "grey";
@@ -514,24 +520,48 @@ function controls(){
   context.fillStyle = "white";
   context.font = "20px Courier New";
   context.fillText("controls:", 20, 100);
-  context.fillText("left: " + keyMappings["left"].value, 40, 150);
-  context.fillText("right: " + keyMappings["right"].value, 40, 200);
-  context.fillText("soft drop: " + keyMappings["soft"].value, 40, 250);
-  context.fillText("hard drop: " + keyMappings["hard"].value, 40, 300);
-  context.fillText("rotate clockwise: " + keyMappings["clockwise"].value, 40, 350);
-  context.fillText("rotate counterclockwise: " + keyMappings["counter"].value, 40, 400);
+  context.fillText(keyMappings["left"].name + ": " + keyMappings["left"].value, 40, 150);
+  context.fillText(keyMappings["right"].name + ": " + keyMappings["right"].value, 40, 200);
+  context.fillText(keyMappings["soft"].name + ": " + keyMappings["soft"].value, 40, 250);
+  context.fillText(keyMappings["hard"].name + ": " + keyMappings["hard"].value, 40, 300);
+  context.fillText(keyMappings["clockwise"].name + ": " + keyMappings["clockwise"].value, 40, 350);
+  context.fillText(keyMappings["counter"].name + ": " + keyMappings["counter"].value, 40, 400);
   let container = document.getElementById("canvas-container");
   for(let key in keyMappings){
-    let button = document.createElement("button");
-    button.innerHTML = "change";
-    button.id = key;
-    button.className = "controlButton";
-    container.appendChild(button);
+    let btn = document.createElement("button");
+    btn.innerHTML = "change";
+    btn.id = key;
+    btn.className = "controlButton";
+    btn.onclick = function(){changeMappingScreen(this.id)};
+    container.appendChild(btn);
   }
+}
+
+function changeMappingScreen(control){
+  toggle("controlButton", "none");
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(MyGame.assets["background"], 0, 0);
+  context.fillStyle = "grey";
+  context.fillRect(10, 70, 775, 50);
+  context.fillStyle = "white";
+  context.font = "20px Courier New";
+  context.fillText("click any button to map to \'" + keyMappings[control].name + "\' command", 20, 100);
+  commandToChange = control;
+}
+
+function changeMapping(code, value){
+  console.log(keyMappings[commandToChange]);
+  keyMappings[commandToChange].key = code;
+  keyMappings[commandToChange].value = value;
+  console.log(keyMappings[commandToChange]);
+  commandToChange = "";
+  controls();
 }
 
 
 function credits(){
+  commandToChange = "";
+  toggle("controlButton", "none");
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(MyGame.assets["background"], 0, 0);
   context.fillStyle = "grey";
@@ -620,4 +650,12 @@ function sortScore(b,a) {
 
 function setScoreText(level, score, cleared){
   document.getElementById("score").innerText = "level: " + level.toString() + "   score: " + score.toString()+ "   lines cleared: " + cleared.toString();
+}
+//got this from here to hide all elements of class
+//https://stackoverflow.com/questions/11254429/hiding-all-elements-with-the-same-class-name/11254446
+function toggle(className, displayState){
+    var elements = document.getElementsByClassName(className)
+    for (var i = 0; i < elements.length; i++){
+        elements[i].style.display = displayState;
+    }
 }
