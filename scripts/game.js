@@ -3,6 +3,10 @@ const GRID_HEIGHT = 20;
 const CELL_SIZE = 45;
 const X_OFFSET = 200;
 const Y_OFFSET = 70;
+let highs = [0,0,0,0,0];
+if(localStorage.getItem("tetris.highs")){
+  highs = localStorage.getItem("tetris.highs").split(',');
+}
 
 let canvas = document.getElementById("id-canvas");
 let context = canvas.getContext("2d");
@@ -18,6 +22,10 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     let frameSpeed = 1000;
     let chainReaction = 100;
     let cleared = [];
+    let linesCleared = 0;
+    let score = 0;
+    let level = 0;
+    let gameOver = false;
 
     let particlesFire = systems.ParticleSystem({
             center: { x: 300, y: 300 },
@@ -42,10 +50,13 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
         if (frameTime>frameSpeed) {
           frameTime = 0;
           if(cleared.length>0){
+            frameSpeed = 100;
             cleared.sort(sortNumber);
             dropRow(cleared.pop());
-            // die();
           }else{
+            if(level<100){
+              frameSpeed = 1000 - level*100;
+            }
             moveDown();
           }
         }
@@ -55,6 +66,11 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           }
           activePiece = nextPiece;
           nextPiece = getRandomPiece();
+          for(let i = 0;i<4;i++){
+            if(cells[getKey(activePiece.pieces[i].x, activePiece.pieces[i].y)]!="white"){
+              gameOver = true;
+            }
+          }
           checkCompleteRow();
           landed=false;
         }
@@ -74,9 +90,13 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 
     function gameLoop(time) {
         let elapsedTime = (time - lastTimeStamp);
-        update(elapsedTime);
-        lastTimeStamp = time;
-        render();
+        if(!gameOver){
+          update(elapsedTime);
+          lastTimeStamp = time;
+          render();
+        }else{
+          gameOverScreen(score);
+        }
         requestAnimationFrame(gameLoop);
     };
 
@@ -88,7 +108,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     function checkCompleteRow(){
       for(let y = GRID_HEIGHT - 1; y>=0; y--){
         let rowCleared = true;
-        for(let x = 0; x < GRID_WIDTH - 1; x++){
+        for(let x = 0; x < GRID_WIDTH; x++){
           if(cells[getKey(x,y)]=="white"){
             rowCleared=false;
           }
@@ -98,6 +118,21 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           cleared.push(y);
         }
       }
+      if(cleared.length ==1){
+        score += 40 * (level+1);
+      }else if(cleared.length ==2){
+        score += 100 * (level+1);
+      } else if(cleared.length ==3){
+        score += 300 * (level+1);
+      } else if(cleared.length ==4){
+        score += 1200 * (level+1);
+      }
+      if(level<100){
+        frameSpeed = 1000 - level*100;
+      }
+      linesCleared+=cleared.length;
+      level = Math.floor(linesCleared/10);
+      setScoreText(level, score, linesCleared);
     }
 
     function clearRow(y){
@@ -117,7 +152,6 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           }
         }
       }
-
     }
 
     function addPiecesToBoard(){
@@ -241,8 +275,6 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
         }
       }
       while(wallKick()){};
-      // wallKick();
-      // wallKick();
 
       for(let i = 0; i<4;i++){
         if(cells[getKey(activePiece.pieces[i].x,activePiece.pieces[i].y)] && cells[getKey(activePiece.pieces[i].x,activePiece.pieces[i].y)]!="white"){
@@ -431,13 +463,18 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
 }(MyGame.systems, MyGame.render, MyGame.assets, MyGame.graphics));
 
 function startGame(){
+  document.getElementById("startGame").style.display = "none";
+  document.getElementById("highScores").style.display = "none";
+  document.getElementById("control").style.display = "none";
+  document.getElementById("credits").style.display = "none";
+  setScoreText(1,0,0);
   MyGame.main.initialize();
   let audio = new Audio(MyGame.assets["music"].src);
   audio.play();
 }
 
 function highScores(){
-  // highs = highs.sort(sortNumber);
+  highs = highs.sort(sortScore);
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(MyGame.assets["background"], 0, 0);
   //change rect size when
@@ -446,16 +483,16 @@ function highScores(){
   context.fillStyle = "white";
   context.font = "20px Courier New";
   context.fillText("high scores:", 20, 100);
-  context.fillText("1. 123123123", 40, 150);
-  context.fillText("1. 123123123", 40, 200);
-  context.fillText("1. 123123123", 40, 250);
-  context.fillText("1. 123123123", 40, 300);
-  context.fillText("1. 123123123", 40, 350);
-  // context.fillText("1. " + highs[0], 40, 250);
-  // context.fillText("2. " + highs[1], 40, 300);
-  // context.fillText("3. " + highs[2], 40, 350);
-  // context.fillText("4. " + highs[3], 40, 400);
-  // context.fillText("5. " + highs[4], 40, 450);
+  // context.fillText("1. 123123123", 40, 150);
+  // context.fillText("1. 123123123", 40, 200);
+  // context.fillText("1. 123123123", 40, 250);
+  // context.fillText("1. 123123123", 40, 300);
+  // context.fillText("1. 123123123", 40, 350);
+  context.fillText("1. " + highs[0], 40, 150);
+  context.fillText("2. " + highs[1], 40, 200);
+  context.fillText("3. " + highs[2], 40, 250);
+  context.fillText("4. " + highs[3], 40, 300);
+  context.fillText("5. " + highs[4], 40, 350);
 }
 
 function controls(){
@@ -481,6 +518,28 @@ function credits(){
   context.fillText("credits:", 20, 100);
   context.fillText("by alan henderson", 40, 150);
   context.fillText("all assets from opengameart.org", 40, 200);
+}
+
+function gameOverScreen(score){
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(MyGame.assets["background"], 0, 0);
+  console.log("gameOver");
+  context.fillStyle = "grey";
+  context.fillRect(10, 70, 470, 150);
+  context.fillStyle = "white";
+  context.font = "20px Courier New";
+  context.fillText("game over. you scored " + score.toString(), 20, 100);
+  if (score >= highs[4] && score!=0){
+    context.fillText("you got a high score!", 40, 150);
+    highs[4]=score;
+    score = 0;
+  }
+  context.fillText("refresh your browswer to play again", 40, 200);
+  for(let i in highs){
+    highs[i] = parseInt(highs[i]);
+  }
+  highs.sort(sortScore);
+  localStorage.setItem("tetris.highs", highs);
 }
 
 function getKey(x,y){
@@ -523,9 +582,17 @@ function getRandomPiece(){
                   {color: "purple", pieces: purple, orientation: "up"},
                   {color: "blue", pieces: blue, orientation: "up"},
                   {color: "orange", pieces: orange, orientation: "up"}];
-  return pieces[Random.nextRange(0,6)];
+  return pieces[Random.nextRange(0,7)];
 }
 
 function sortNumber(b,a) {
     return a - b;
+}
+
+function sortScore(b,a) {
+    return a-b;
+}
+
+function setScoreText(level, score, cleared){
+  document.getElementById("score").innerText = "level: " + level.toString() + "   score: " + score.toString()+ "   lines cleared: " + cleared.toString();
 }
