@@ -68,7 +68,7 @@ MyGame.systems.ParticleSystem = function() {
         y=column*45+92.5;
         direction = {x: 0, y: 1};//down
       }
-      create(x,y,direction, Random.nextGaussian(.5,.1));
+      create(x,y,direction, Random.nextGaussian(.4,.1));
     }
 
     function update(elapsedTime) {
