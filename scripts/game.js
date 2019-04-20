@@ -139,6 +139,8 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       for(let x = 0; x <GRID_WIDTH; x++){
         cells[getKey(x,y)]="white";
       }
+      let audio = new Audio(MyGame.assets["lineCleared"].src);
+      audio.play();
     }
 
     function dropRow(clearY){
@@ -232,6 +234,8 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     for(let i = 0; i<4; i++){
       if(activePiece.pieces[i].y >= GRID_HEIGHT-1 || (cells[getKey(activePiece.pieces[i].x, activePiece.pieces[i].y+1)]!="white" && activePiece.pieces[i].y+1 >=0)){
         landed=true;
+        let audio = new Audio(MyGame.assets["landed"].src);
+        audio.play();
         return false;
       }
     }

@@ -74,6 +74,14 @@ MyGame.loader = (function() {
         {
             key: 'white',
             source: '/assets/white.png'
+        },
+        {
+          key: "lineCleared",
+          source: '/assets/lineCleared.mp3'
+        },
+        {
+          key: "landed",
+          source: '/assets/landed.mp3'
         }
       ]
 
@@ -124,7 +132,7 @@ MyGame.loader = (function() {
                 if (xhr.status === 200) {
                     if (fileExtension === 'png' || fileExtension === 'jpg') {
                         asset = new Image();
-                    } else if (fileExtension === 'mp3') {
+                    } else if (fileExtension === 'mp3' || fileExtension === 'wav') {
                         asset = new Audio();
                     } else {
                         if (onError) { onError('Unknown file extension: ' + fileExtension); }
@@ -154,7 +162,7 @@ MyGame.loader = (function() {
 
     console.log('Starting to dynamically load project assets');
     loadAssets(assetOrder,
-        function(source, asset) {  
+        function(source, asset) {
             MyGame.assets[source.key] = asset;
         },
         function(error) {
