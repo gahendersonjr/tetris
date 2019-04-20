@@ -36,12 +36,8 @@ MyGame.loader = (function() {
             source: '/assets/background.jpg'
         },
         {
-            key: 'fire',
-            source: '/assets/fire.png'
-        },
-        {
-            key: 'smoke',
-            source: '/assets/smoke.png'
+            key: 'particle',
+            source: '/assets/particle.png'
         },
         {
             key: 'red',

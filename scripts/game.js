@@ -42,23 +42,9 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     let level = 0;
     let gameOver = false;
 
-    let particlesFire = systems.ParticleSystem({
-            center: { x: 300, y: 300 },
-            size: { mean: 10, stdev: 4 },
-            speed: { mean: 50, stdev: 25 },
-            lifetime: { mean: 4, stdev: 1 }
-        },
-        graphics);
-    let particlesSmoke = systems.ParticleSystem({
-            center: { x: 300, y: 300 },
-            size: { mean: 10, stdev: 4 },
-            speed: { mean: 50, stdev: 25 },
-            lifetime: { mean: 4, stdev: 1 }
-        },
-        graphics);
+    let particles = systems.ParticleSystem();
 
-    let renderFire = renderer.ParticleSystem(particlesFire, graphics, assets['fire']);
-    let renderSmoke = renderer.ParticleSystem(particlesSmoke, graphics, assets['smoke']);
+    let renderParticles = renderer.ParticleSystem(particles, graphics, assets['particle']);
 
     function update(elapsedTime) {
         frameTime += elapsedTime;
@@ -89,8 +75,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
           checkCompleteRow();
           landed=false;
         }
-        // particlesSmoke.update(elapsedTime);
-        // particlesFire.update(elapsedTime);
+        particles.update(elapsedTime);
     }
 
     function render() {
@@ -98,9 +83,7 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
         drawNextPiece();
         drawBoard();
         addPiecesToBoard();
-        renderSmoke.render();
-        renderFire.render();
-
+        renderParticles.render();
     }
 
     function gameLoop(time) {
@@ -156,6 +139,10 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       }
       let audio = new Audio(MyGame.assets["lineCleared"].src);
       audio.play();
+      for(let i = 0; i<100; i++){
+        particles.createRowParticles(y);
+        console.log(Random.nextDouble());
+      }
     }
 
     function dropRow(clearY){
@@ -175,13 +162,11 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
       for(let i = 0; i < 4; i++){
         graphics.drawTexture(assets[activePiece.color], {x:activePiece.pieces[i].x*CELL_SIZE+X_OFFSET, y:activePiece.pieces[i].y*CELL_SIZE+Y_OFFSET}, 0, {x:CELL_SIZE, y:CELL_SIZE});
       }
-      //add inactive pieces
     }
 
     function drawBoard() {
       for(let x = 0; x < GRID_WIDTH; x++){
         for(let y = 0; y< GRID_HEIGHT; y++){
-          //need logic here to determine if piece occupies cell. if so, put that piece color. otherwise, put white piece
           graphics.drawTexture(assets[cells[getKey(x,y)]], {x:x*CELL_SIZE+X_OFFSET, y:y*CELL_SIZE+Y_OFFSET}, 0, {x:CELL_SIZE, y:CELL_SIZE});
         }
       }
@@ -202,23 +187,21 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     }
 
     window.onkeyup = function(e) {
-      // console.log(e.key);
-      // console.log(e.keyCode);
       if(commandToChange.length > 0){
         changeMapping(e.keyCode, e.key);
       }else if(!started){
         return;
-      }else if(e.keyCode==keyMappings["left"].key){ //left
+      }else if(e.keyCode==keyMappings["left"].key){
          moveLeft();
-      }else if(e.keyCode==keyMappings["right"].key){ //right
+      }else if(e.keyCode==keyMappings["right"].key){
         moveRight();
-      }else if(e.keyCode==keyMappings["soft"].key){ //down
+      }else if(e.keyCode==keyMappings["soft"].key){
         moveDown();
-      }else if(e.keyCode==keyMappings["hard"].key){ //up
+      }else if(e.keyCode==keyMappings["hard"].key){
         hardDrop();
-      }else if(e.keyCode==keyMappings["counter"].key){ //z
+      }else if(e.keyCode==keyMappings["counter"].key){
         rotate("counter");
-      }else if(e.keyCode==keyMappings["clockwise"].key){ //x
+      }else if(e.keyCode==keyMappings["clockwise"].key){
         rotate("clockwise");
       }
   }
