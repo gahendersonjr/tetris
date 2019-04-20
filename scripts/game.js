@@ -89,15 +89,15 @@ MyGame.main = (function (systems, renderer, assets, graphics) {
     }
 
     function gameLoop(time) {
-        let elapsedTime = (time - lastTimeStamp);
         if(!gameOver){
+          let elapsedTime = (time - lastTimeStamp);
           update(elapsedTime);
           lastTimeStamp = time;
           render();
+          requestAnimationFrame(gameLoop);
         }else{
           gameOverScreen(score);
         }
-        requestAnimationFrame(gameLoop);
     };
 
     function initialize() {
@@ -529,16 +529,18 @@ function gameOverScreen(score){
   context.fillStyle = "white";
   context.font = "20px Courier New";
   context.fillText("game over. you scored " + score.toString(), 20, 100);
+  highs.sort(sortScore);
+  console.log(highs);
   if (score >= highs[4] && score!=0){
     context.fillText("you got a high score!", 40, 150);
     highs[4]=score;
-    score = 0;
   }
+  highs.sort(sortScore);
+  score = 0;
   context.fillText("refresh your browswer to play again", 40, 200);
   for(let i in highs){
     highs[i] = parseInt(highs[i]);
   }
-  highs.sort(sortScore);
   localStorage.setItem("tetris.highs", highs);
 }
 
