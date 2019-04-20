@@ -45,3 +45,42 @@ body
   left: 30px;
   top: 10px;
 }
+
+#left{
+  top: 200px;
+}
+
+#right{
+  top: 250px;
+}
+
+#soft{
+  top: 300px;
+}
+
+#hard{
+  top: 350px;
+}
+
+#clockwise{
+  top: 400px;
+}
+
+#counter{
+  top: 450px;
+}
+
+.controlButton{
+  position: absolute;
+  left: 50px;
+  background-color: white;
+  color: gray;
+  font-family: "Courier New";
+  border: none;
+}
+
+.controlButton:hover{
+  background-color: grey;
+  color: white;
+  border:2px solid white;
+}

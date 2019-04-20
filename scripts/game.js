@@ -510,7 +510,7 @@ function controls(){
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(MyGame.assets["background"], 0, 0);
   context.fillStyle = "grey";
-  context.fillRect(10, 70, 475, 450);
+  context.fillRect(10, 70, 475, 400);
   context.fillStyle = "white";
   context.font = "20px Courier New";
   context.fillText("controls:", 20, 100);
@@ -520,13 +520,14 @@ function controls(){
   context.fillText("hard drop: " + keyMappings["hard"].value, 40, 300);
   context.fillText("rotate clockwise: " + keyMappings["clockwise"].value, 40, 350);
   context.fillText("rotate counterclockwise: " + keyMappings["counter"].value, 40, 400);
-  controlMode=true;
-  context.fillText("to re-map keys, press the key you want", 20, 475);
-  context.fillText("to change followed by the new key.", 20, 500);
-  var button = document.createElement("button");
-  button.innerHTML = "Do Something";
   let container = document.getElementById("canvas-container");
-  container.appendChild(button);
+  for(let key in keyMappings){
+    let button = document.createElement("button");
+    button.innerHTML = "change";
+    button.id = key;
+    button.className = "controlButton";
+    container.appendChild(button);
+  }
 }
 
 
